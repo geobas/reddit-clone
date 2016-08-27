@@ -57,24 +57,7 @@ app.config(['$stateProvider', '$urlRouterProvider',
 
 app.controller('MainCtrl', ['$scope', 'Posts', 'Auth',
     function($scope, Posts, Auth) {
-        /*
-		$scope.posts = [{
-			title: 'post 1',
-			upvotes: 5
-		}, {
-			title: 'post 2',
-			upvotes: 2
-		}, {
-			title: 'post 3',
-			upvotes: 15
-		}, {
-			title: 'post 4',
-			upvotes: 9
-		}, {
-			title: 'post 5',
-			upvotes: 4
-		}];
-		*/
+
         $scope.posts = Posts.posts;
 
         $scope.addPost = function() {
