@@ -1,4 +1,4 @@
-var app = angular.module('redditClone', ['ui.router']);
+var app = angular.module('redditClone', ['ui.router', 'ui.bootstrap']);
 
 app.config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
@@ -95,7 +95,17 @@ app.controller('MainCtrl', ['$scope', 'Posts', 'Auth',
             Posts.upVote(post);
         };
 
+        $scope.decrementUpvotes = function(post) {
+            if (!Auth.isLoggedIn())
+                $scope.error = 'You need to be logged in to downvote.';
+            Posts.downVote(post);
+        };
+
         $scope.isLoggedIn = Auth.isLoggedIn;
+
+        $scope.closeAlert = function() {
+            $scope.error = false;
+        };
     }
 ]);
 
@@ -125,7 +135,17 @@ app.controller('PostsCtrl', ['$scope', 'Posts', 'post', 'Auth',
             Posts.upvoteComment(post, comment);
         };
 
+        $scope.decrementUpvotes = function(comment) {
+            if (!Auth.isLoggedIn())
+                $scope.error = 'You need to be logged in to downvote.';
+            Posts.downvoteComment(post, comment);
+        };
+
         $scope.isLoggedIn = Auth.isLoggedIn;
+
+        $scope.closeAlert = function() {
+            $scope.error = false;
+        };
     }
 ]);
 
@@ -183,13 +203,23 @@ app.factory('Posts', ['$http', 'Auth',
             });
         }
 
-        function updatePostVote(post) {
+        function incrementPostVote(post) {
             return $http.put('/posts/' + post._id + '/upvote', null, {
                 headers: {
                     Authorization: 'Bearer ' + Auth.getToken()
                 }
             }).success(function(data) {
                 post.upvotes += 1;
+            });
+        }
+
+        function decrementPostVote(post) {
+            return $http.put('/posts/' + post._id + '/downvote', null, {
+                headers: {
+                    Authorization: 'Bearer ' + Auth.getToken()
+                }
+            }).success(function(data) {
+                post.upvotes -= 1;
             });
         }
 
@@ -207,7 +237,7 @@ app.factory('Posts', ['$http', 'Auth',
             });
         }
 
-        function updateCommentVote(post, comment) {
+        function incrementCommentVote(post, comment) {
             return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/upvote', null, {
                 headers: {
                     Authorization: 'Bearer ' + Auth.getToken()
@@ -217,14 +247,26 @@ app.factory('Posts', ['$http', 'Auth',
             });
         }
 
+        function decrementCommentVote(post, comment) {
+            return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/downvote', null, {
+                headers: {
+                    Authorization: 'Bearer ' + Auth.getToken()
+                }
+            }).success(function(data) {
+                comment.upvotes -= 1;
+            });
+        }
+
         var o = {
             posts: [],
             getAll: getAllPosts,
             getOne: getPost,
             createPost: createNewPost,
-            upVote: updatePostVote,
+            upVote: incrementPostVote,
+            downVote: decrementPostVote,
             addComment: addNewComment,
-            upvoteComment: updateCommentVote
+            upvoteComment: incrementCommentVote,
+            downvoteComment: decrementCommentVote
         };
 
         return o;

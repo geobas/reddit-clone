@@ -18,4 +18,11 @@ CommentSchema.methods.upvote = function(cb) {
     this.save(cb);
 };
 
+CommentSchema.methods.downvote = function(cb) {
+    if (this.upvotes > 0) {
+        this.upvotes -= 1;
+        this.save(cb);
+    }
+};
+
 mongoose.model('Comment', CommentSchema);
