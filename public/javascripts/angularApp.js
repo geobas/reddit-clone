@@ -89,6 +89,13 @@ app.controller('MainCtrl', ['$scope', 'Posts', 'Auth',
         $scope.closeAlert = function() {
             $scope.error = false;
         };
+
+        $scope.notValid = function(url) {
+            var pattern = /^((http|https|ftp):\/\/)/;
+            if (!pattern.test(url)) {
+                return true;
+            }
+        };
     }
 ]);
 
@@ -98,7 +105,7 @@ app.controller('PostsCtrl', ['$scope', 'Posts', 'post', 'Auth',
         $scope.post = post;
 
         $scope.addComment = function() {
-            if ($scope.body === '') {
+            if ($scope.body.length == 0) {
                 return;
             }
 
@@ -128,6 +135,13 @@ app.controller('PostsCtrl', ['$scope', 'Posts', 'post', 'Auth',
 
         $scope.closeAlert = function() {
             $scope.error = false;
+        };
+
+        $scope.notValid = function(url) {
+            var pattern = /^((http|https|ftp):\/\/)/;
+            if (!pattern.test(url)) {
+                return true;
+            }
         };
     }
 ]);

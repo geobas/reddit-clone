@@ -2,6 +2,7 @@
 	<head>
 		<title>A Reddit clone written in MEAN</title>
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+		<link href="/stylesheets/style.css" rel="stylesheet">
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.12/angular.min.js"></script>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.1.3/ui-bootstrap-tpls.min.js"></script>
@@ -10,7 +11,7 @@
 	</head>
 	<body>
 
-		<nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
+		<nav class="navbar navbar-default navbar-fixed-top" ng-controller="NavCtrl">
 			<ul class="nav navbar-nav">
 				<li><a href="/#/home">Home Page</a></li>
 				<li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
@@ -20,11 +21,15 @@
 			</ul>
 		</nav>
 
-		<div class="row">
+		<div class="container">
 
-			<div class="col-md-6 col-md-offset-3">
+			<div class="row">
 
-				<ui-view></ui-view>
+				<div class="col-md-8 col-md-offset-2">
+
+					<ui-view></ui-view>
+
+				</div>
 
 			</div>
 
@@ -35,14 +40,18 @@
 				<h1>Home Page</h1>
 			</div>
 
-			<div ng-repeat="post in posts | orderBy:'-upvotes'">
+			<div class="item" ng-repeat="post in posts | orderBy:'-upvotes'">
 				<span class="glyphicon glyphicon-thumbs-up"
 				ng-click="incrementUpvotes(post)"></span>
 				{{post.upvotes}}
 				<span style="cursor:pointer" class="glyphicon glyphicon-thumbs-down"
 				ng-click="decrementUpvotes(post)"></span>
 				<span style="font-size:20px; margin-left:10px;">
-					<a ng-show="post.link" href="http://{{post.link}}" target="_blank">
+					<a ng-show="post.link && !notValid(post.link)" href="{{post.link}}" target="_blank">
+						<img class="photo" src="{{post.link}}" alt="{{post.title}}">
+					</a>
+					<img ng-show="notValid(post.link)" class="photo" src="images/noimage_small.jpg" alt="">
+					<a ng-show="post.link" href="{{post.link}}" target="_blank">
 						{{post.title}}
 					</a>
 					<span ng-hide="post.link">
@@ -57,9 +66,11 @@
 				</span>
 			</div>
 
-			<div uib-alert ng-show="error" class="alert-danger" close="closeAlert()">{{ error }}</div>
+			<div uib-alert ng-show="error" class="alert-danger" close="closeAlert()">
+				{{ error }}
+			</div>
 
-			<div ng-hide="isLoggedIn()">
+			<div class="login" ng-hide="isLoggedIn()">
 				<h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a post.</h3>
 			</div>
 
@@ -85,23 +96,25 @@
 		<script type="text/ng-template" id="/posts.html">
 			<div class="page-header">
 				<h3>
-					<a ng-show="post.link" href="http://{{post.link}}" target="_blank">
+					<a ng-show="post.link && !notValid(post.link)" href="{{post.link}}" target="_blank">
 						{{post.title}}
 					</a>
-					<span ng-hide="post.link">
+					<span ng-show="notValid(post.link)">
 						{{post.title}}
 					</span>
+					<img ng-show="!notValid(post.link)" class="inside" src="{{post.link}}" alt="{{post.title}}">
+					<img ng-show="notValid(post.link)" class="inside" src="images/noimage.jpg" alt="">
 				</h3>
 			</div>
 
-			<div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
+			<div class="commentRow" ng-repeat="comment in post.comments | orderBy:'-upvotes'">
 				<span class="glyphicon glyphicon-thumbs-up"
 				ng-click="incrementUpvotes(comment)"></span>
 				{{comment.upvotes}}
 				<span style="cursor:pointer" class="glyphicon glyphicon-thumbs-down"
 				ng-click="decrementUpvotes(comment)"></span>
 				by {{comment.author}}
-				<span style="font-size:20px; margin-left:10px;">
+				<span class="comment">
 					{{comment.body}}
 				</span>
 			</div>
