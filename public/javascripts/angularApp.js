@@ -105,7 +105,7 @@ app.controller('PostsCtrl', ['$scope', 'Posts', 'post', 'Auth',
         $scope.post = post;
 
         $scope.addComment = function() {
-            if ($scope.body.length == 0) {
+            if (!$scope.body || $scope.body === '') {
                 return;
             }
 
