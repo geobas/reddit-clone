@@ -13,5 +13,5 @@ To get this application up and running:
 
 ## Installed Node packages
 * mongoose as an ORM for Mongo
-* passport to locally authenticate user
-* express-jwt for authentication/authorization with JSON Web Token
+* passport for locally authenticating users
+* express-jwt for authentication/authorization with JWT
