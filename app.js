@@ -71,6 +71,6 @@ require('./models/Users');
 require('./config/passport');
 
 // connect to mongoDB
-mongoose.connect('mongodb://localhost/reddit_clone');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/reddit_clone');
 
 module.exports = app;
