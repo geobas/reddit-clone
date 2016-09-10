@@ -12,6 +12,6 @@ To get this application up and running:
 * Go to [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Installed Node packages
-* **_mongoose_** as an ORM for Mongo
+* **_mongoose_** as an ODM for Mongo
 * **_passport_** for locally authenticating users
 * **_express-jwt_** for authentication/authorization with JWT
