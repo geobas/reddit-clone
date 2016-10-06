@@ -59,6 +59,7 @@ app.controller('MainCtrl', ['$scope', 'Posts', 'Auth',
     function($scope, Posts, Auth) {
 
         $scope.posts = Posts.posts;
+        $scope.error = false;
 
         $scope.addPost = function() {
             if (!$scope.title || $scope.title === '') {
@@ -99,9 +100,10 @@ app.controller('MainCtrl', ['$scope', 'Posts', 'Auth',
     }
 ]);
 
-app.controller('PostsCtrl', ['$scope', 'Posts', 'post', 'Auth',
-    function($scope, Posts, post, Auth) {
+app.controller('PostsCtrl', ['$rootScope', '$scope', 'Posts', 'post', 'Auth',
+    function($rootScope, $scope, Posts, post, Auth) {
 
+        $rootScope.error = false;
         $scope.post = post;
 
         $scope.addComment = function() {
@@ -147,10 +149,13 @@ app.controller('PostsCtrl', ['$scope', 'Posts', 'post', 'Auth',
 ]);
 
 app.controller('AuthCtrl', [
+    '$rootScope',
     '$scope',
     '$state',
     'Auth',
-    function($scope, $state, Auth) {
+    function($rootScope, $scope, $state, Auth) {
+
+        $rootScope.error = false;
         $scope.user = {};
 
         $scope.register = function() {
@@ -181,8 +186,8 @@ app.controller('NavCtrl', [
     }
 ]);
 
-app.factory('Posts', ['$http', 'Auth',
-    function($http, Auth) {
+app.factory('Posts', ['$rootScope', '$http', 'Auth',
+    function($rootScope, $http, Auth) {
 
         function getAllPosts() {
             return $http.get('/posts').success(function(data) {
@@ -241,6 +246,9 @@ app.factory('Posts', ['$http', 'Auth',
                 }
             }).success(function(data) {
                 comment.upvotes += 1;
+                $rootScope.error = false;
+            }).error(function() {
+                $rootScope.error = 'You have already voted.';
             });
         }
 
@@ -251,6 +259,8 @@ app.factory('Posts', ['$http', 'Auth',
                 }
             }).success(function(data) {
                 comment.upvotes -= 1;
+            }).error(function() {
+                $rootScope.error = 'You have already voted.';
             });
         }
 

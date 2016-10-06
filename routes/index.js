@@ -142,7 +142,7 @@ router.param('comment', function(req, res, next, id) {
 
 /* upvote a comment. */
 router.put('/posts/:post/comments/:comment/upvote', auth, function(req, res, next) {
-    req.comment.upvote(req.payload._id, function(err, post) {
+    req.comment.upvote(req.payload._id, next, function(err, post) {
         if (err) {
             return next(err);
         }
@@ -153,7 +153,7 @@ router.put('/posts/:post/comments/:comment/upvote', auth, function(req, res, nex
 
 /* downvote a comment. */
 router.put('/posts/:post/comments/:comment/downvote', auth, function(req, res, next) {
-    req.comment.downvote(req.payload._id, function(err, post) {
+    req.comment.downvote(req.payload._id, next, function(err, post) {
         if (err) {
             return next(err);
         }

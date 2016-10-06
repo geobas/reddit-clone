@@ -16,7 +16,7 @@ var CommentSchema = new mongoose.Schema({
     }]
 });
 
-CommentSchema.methods.upvote = function(_id, cb) {
+CommentSchema.methods.upvote = function(_id, next, cb) {
 
     if (this.users.indexOf(_id) == -1) {
         this.users.push(
@@ -24,10 +24,13 @@ CommentSchema.methods.upvote = function(_id, cb) {
         );
         this.upvotes += 1;
         this.save(cb);
+    } else {
+        var err = new Error();
+        return next(err);
     }
 };
 
-CommentSchema.methods.downvote = function(_id, cb) {
+CommentSchema.methods.downvote = function(_id, next, cb) {
 
     if (this.users.indexOf(_id) == -1 && this.upvotes > 0) {
         this.users.push(
@@ -35,6 +38,9 @@ CommentSchema.methods.downvote = function(_id, cb) {
         );
         this.upvotes -= 1;
         this.save(cb);
+    } else {
+        var err = new Error();
+        return next(err);
     }
 };
 
