@@ -15,18 +15,37 @@ var PostSchema = new mongoose.Schema({
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
+    }],
+    users: [{
+        type: String
     }]
 });
 
-PostSchema.methods.upvote = function(cb) {
-    this.upvotes += 1;
-    this.save(cb);
+PostSchema.methods.upvote = function(_id, next, cb) {
+
+    if (this.users.indexOf(_id) == -1) {
+        this.users.push(
+            _id
+        );
+        this.upvotes += 1;
+        this.save(cb);
+    } else {
+        var err = new Error();
+        return next(err);
+    }
 };
 
-PostSchema.methods.downvote = function(cb) {
-    if (this.upvotes > 0) {
+PostSchema.methods.downvote = function(_id, next, cb) {
+
+    if (this.users.indexOf(_id) == -1 && this.upvotes > 0) {
+        this.users.push(
+            _id
+        );
         this.upvotes -= 1;
         this.save(cb);
+    } else {
+        var err = new Error();
+        return next(err);
     }
 };
 

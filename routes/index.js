@@ -81,7 +81,7 @@ router.get('/posts/:post', function(req, res) {
 
 /* upvote post. */
 router.put('/posts/:post/upvote', auth, function(req, res, next) {
-    req.post.upvote(function(err, post) {
+    req.post.upvote(req.payload._id, next, function(err, post) {
         if (err) {
             return next(err);
         }
@@ -92,7 +92,7 @@ router.put('/posts/:post/upvote', auth, function(req, res, next) {
 
 /* downvote post. */
 router.put('/posts/:post/downvote', auth, function(req, res, next) {
-    req.post.downvote(function(err, post) {
+    req.post.downvote(req.payload._id, next, function(err, post) {
         if (err) {
             return next(err);
         }

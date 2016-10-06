@@ -55,11 +55,11 @@ app.config(['$stateProvider', '$urlRouterProvider',
     }
 ]);
 
-app.controller('MainCtrl', ['$scope', 'Posts', 'Auth',
-    function($scope, Posts, Auth) {
+app.controller('MainCtrl', ['$rootScope', '$scope', 'Posts', 'Auth',
+    function($rootScope, $scope, Posts, Auth) {
 
+        $rootScope.error = false;
         $scope.posts = Posts.posts;
-        $scope.error = false;
 
         $scope.addPost = function() {
             if (!$scope.title || $scope.title === '') {
@@ -71,6 +71,7 @@ app.controller('MainCtrl', ['$scope', 'Posts', 'Auth',
             });
             $scope.title = '';
             $scope.link = '';
+            $rootScope.error = false;
         };
 
         $scope.incrementUpvotes = function(post) {
@@ -212,6 +213,8 @@ app.factory('Posts', ['$rootScope', '$http', 'Auth',
                 }
             }).success(function(data) {
                 post.upvotes += 1;
+            }).error(function() {
+                $rootScope.error = 'You have already voted.';
             });
         }
 
@@ -222,6 +225,8 @@ app.factory('Posts', ['$rootScope', '$http', 'Auth',
                 }
             }).success(function(data) {
                 post.upvotes -= 1;
+            }).error(function() {
+                $rootScope.error = 'You have already voted.';
             });
         }
 
@@ -280,8 +285,8 @@ app.factory('Posts', ['$rootScope', '$http', 'Auth',
     }
 ]);
 
-app.factory('Auth', ['$http', '$window',
-    function($http, $window) {
+app.factory('Auth', ['$rootScope', '$http', '$window',
+    function($rootScope, $http, $window) {
 
         function saveToken(token) {
             $window.localStorage['reddit-clone-token'] = token;
@@ -325,6 +330,7 @@ app.factory('Auth', ['$http', '$window',
         };
 
         function logOutUser() {
+            $rootScope.error = false;
             $window.localStorage.removeItem('reddit-clone-token');
         };
 
