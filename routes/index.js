@@ -15,7 +15,8 @@ var jwt = require('express-jwt');
 
 var auth = jwt({
     secret: '#$%^&*(FGHJ!nb42', // use an environment variable for referencing your secret
-    userProperty: 'payload'
+    userProperty: 'payload',
+    algorithms: ['HS256']
 });
 
 /* GET home page. */
